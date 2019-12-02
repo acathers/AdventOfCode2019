@@ -36,8 +36,7 @@ public class Day2 extends Day {
     public int solutionPartTwo(){
         for(int noun = 0; noun < 100; noun++){
             for(int verb = 0; verb < 100; verb++) {
-               int result = solutionPartOne(noun, verb);
-               if(result == 19690720){
+               if(solutionPartOne(noun, verb) == 19690720){
                    return 100 * noun + verb;
                 }
             }
