@@ -1,7 +1,5 @@
 package dev.cathers.adventofcode.solutions;
-
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 public class Day1 extends Day{
     UnaryOperator<Integer> calculateFuel = (v) -> v / 3 - 2;
