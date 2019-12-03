@@ -1,7 +1,4 @@
 package dev.cathers.adventofcode.solutions;
-
-import org.openjdk.jmh.annotations.Benchmark;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,7 +12,6 @@ public class Day3 extends Day {
     HashMap<Point, Integer> wireTwoPointQuickIndex = new HashMap<>();
     List<Point> intersections = wireOnePoints.stream().filter(wireTwoPointsFast::contains).collect(Collectors.toList());
 
-    @Benchmark
     public int solutionPartOne() {
        return intersections.stream()
                .map(new Point(0, 0)::calcDist)
@@ -23,15 +19,14 @@ public class Day3 extends Day {
                .orElse(-1);
     }
 
-    @Benchmark
     public int solutionPartTwo() {
         wireOnePoints.stream().forEachOrdered(point -> wireOnePointQuickIndex.put(point, wireOnePointQuickIndex.size()));
         wireTwoPoints.stream().forEachOrdered(point -> wireTwoPointQuickIndex.put(point, wireTwoPointQuickIndex.size()));
-        return intersections.stream().map(point -> wireTwoPointQuickIndex.get(point) + wireOnePointQuickIndex.get(point)).min(Integer::compareTo).orElse(-1);
-
+        return intersections.stream()
+                .map(point -> wireTwoPointQuickIndex.get(point) + wireOnePointQuickIndex.get(point)).min(Integer::compareTo)
+                .orElse(-1);
     }
 
-    @Benchmark
     List<Point> calculateEnd(List<String> path) {
         int nextX = 0;
         int nextY = 0;
@@ -63,8 +58,6 @@ public class Day3 extends Day {
         }
         return points;
     }
-
-
 }
 
 class Point {
@@ -92,9 +85,5 @@ class Point {
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
-    }
-
-    public String toString() {
-        return String.format("(%d, %d)", x, y);
     }
 }
