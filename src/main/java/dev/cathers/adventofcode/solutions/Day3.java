@@ -1,106 +1,83 @@
 package dev.cathers.adventofcode.solutions;
 
+import org.openjdk.jmh.annotations.Benchmark;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Day3 extends Day {
+    List<String> wireOnePath = Arrays.asList(input.get(0).split(","));
+    List<String> wireTwoPath = Arrays.asList(input.get(1).split(","));
+    List<Point> wireOnePoints = calculateEnd(wireOnePath);
+    List<Point> wireTwoPoints = calculateEnd(wireTwoPath);
+    HashSet<Point> wireTwoPointsFast = new HashSet<>(wireTwoPoints);
+    HashMap<Point, Integer> wireOnePointQuickIndex = new HashMap<>();
+    HashMap<Point, Integer> wireTwoPointQuickIndex = new HashMap<>();
+    List<Point> intersections = wireOnePoints.stream().filter(wireTwoPointsFast::contains).collect(Collectors.toList());
 
-    public double solutionPartOne(){
-        List<String> wireOnePath = Arrays.asList(input.get(0).split(","));
-        List<String> wireTwoPath = Arrays.asList(input.get(1).split(","));
-        List<Point> wireOnePoints= calculateEnd(wireOnePath);
-        List<Point> wireTwoPoints = calculateEnd(wireTwoPath);
-        List<Point> crossing = new ArrayList<>();
-        for(Point point: wireOnePoints){
-            if(wireTwoPoints.contains(point)){
-                crossing.add(wireTwoPoints.remove(wireTwoPoints.indexOf(point)));
-            }
-        }
-        int min = Integer.MAX_VALUE;
-        Point starting = new Point(0, 0);
-        for(Point point: crossing){
-            int value = starting.calcDist(point);
-            if(value < min){
-                min = value;
-            }
-        }
-        return min;
+    @Benchmark
+    public int solutionPartOne() {
+       return intersections.stream()
+               .map(new Point(0, 0)::calcDist)
+               .min(Integer::compareTo)
+               .orElse(-1);
     }
 
-    public double solutionPartTwo(){
-        List<String> wireOnePath = Arrays.asList(input.get(0).split(","));
-        List<String> wireTwoPath = Arrays.asList(input.get(1).split(","));
-        List<Point> wireOnePoints= calculateEnd(wireOnePath);
-        List<Point> wireTwoPoints = calculateEnd(wireTwoPath);
-        List<Integer> steps = new ArrayList<>();
-        for(Point point: wireOnePoints){
-            if(wireTwoPoints.contains(point)){
-            //    steps.add(wireTwoPoints.indexOf(point) + wireOnePoints.indexOf(point) );
-                return wireTwoPoints.indexOf(point) + wireOnePoints.indexOf(point);
-            }
-        }
+    @Benchmark
+    public int solutionPartTwo() {
+        wireOnePoints.stream().forEachOrdered(point -> wireOnePointQuickIndex.put(point, wireOnePointQuickIndex.size()));
+        wireTwoPoints.stream().forEachOrdered(point -> wireTwoPointQuickIndex.put(point, wireTwoPointQuickIndex.size()));
+        return intersections.stream().map(point -> wireTwoPointQuickIndex.get(point) + wireOnePointQuickIndex.get(point)).min(Integer::compareTo).orElse(-1);
 
-        int min = Integer.MAX_VALUE;
-        Point starting = new Point(0, 0);
-
-        for(int point: steps){
-            if(point < min){
-                min = point;
-            }
-        }
-        return min;
     }
 
-
-
-    List<Point> calculateEnd(List<String> path){
+    @Benchmark
+    List<Point> calculateEnd(List<String> path) {
         int nextX = 0;
         int nextY = 0;
         List<Point> points = new ArrayList<>();
         points.add(new Point(0, 0));
-        for(String value: path){
+        for (String value : path) {
             Point lastPoint = points.get(points.size() - 1);
-            if(value.startsWith("U")){
+            if (value.startsWith("U")) {
                 nextY += Integer.parseInt(value.substring(1));
-                while(lastPoint.y < nextY){
+                while (lastPoint.y < nextY) {
                     points.add(new Point(lastPoint.x, ++lastPoint.y));
                 }
-            }
-            if(value.startsWith("D")){
+            } else if (value.startsWith("D")) {
                 nextY -= Integer.parseInt(value.substring(1));
-                while(lastPoint.y > nextY){
+                while (lastPoint.y > nextY) {
                     points.add(new Point(lastPoint.x, --lastPoint.y));
                 }
-            }
-            if(value.startsWith("L")){
+            } else if (value.startsWith("L")) {
                 nextX -= Integer.parseInt(value.substring(1));
-                while(lastPoint.x > nextX){
+                while (lastPoint.x > nextX) {
                     points.add(new Point(--lastPoint.x, lastPoint.y));
                 }
-            }
-            if(value.startsWith("R")){
+            } else if (value.startsWith("R")) {
                 nextX += Integer.parseInt(value.substring(1));
-                while(lastPoint.x < nextX){
+                while (lastPoint.x < nextX) {
                     points.add(new Point(++lastPoint.x, lastPoint.y));
                 }
             }
-
         }
         return points;
     }
 
 
-
-    }
+}
 
 class Point {
     int x;
     int y;
-    public Point(int x, int y){
+
+    public Point(int x, int y) {
         this.x = x;
         this.y = y;
     }
-    public int calcDist(Point p){
-        return Math.abs(x-p.x) + Math.abs(y-p.y);
+
+    public int calcDist(Point p) {
+        return Math.abs(x - p.x) + Math.abs(y - p.y);
     }
 
     @Override
@@ -117,7 +94,7 @@ class Point {
         return Objects.hash(x, y);
     }
 
-    public String toString(){
+    public String toString() {
         return String.format("(%d, %d)", x, y);
     }
 }

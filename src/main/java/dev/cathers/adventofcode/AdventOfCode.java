@@ -3,9 +3,13 @@ package dev.cathers.adventofcode;
 import dev.cathers.adventofcode.solutions.Day1;
 import dev.cathers.adventofcode.solutions.Day2;
 import dev.cathers.adventofcode.solutions.Day3;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 public class AdventOfCode {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RunnerException {
         Day1 day1 = new Day1();
         System.out.println("Day 1 part 1: " + day1.solutionPartOne());
         System.out.println("Day 1 part 2: " + day1.solutionPartTwo());
