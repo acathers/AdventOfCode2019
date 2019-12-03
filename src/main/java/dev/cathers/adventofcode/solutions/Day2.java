@@ -1,6 +1,7 @@
 package dev.cathers.adventofcode.solutions;
 
 import java.util.Arrays;
+import java.util.Random;
 import java.util.stream.Stream;
 
 public class Day2 extends Day {
@@ -34,13 +35,15 @@ public class Day2 extends Day {
     }
 
     public int solutionPartTwo(){
-        for(int noun = 0; noun < 100; noun++){
-            for(int verb = 0; verb < 100; verb++) {
-               if(solutionPartOne(noun, verb) == 19690720){
-                   return 100 * noun + verb;
-                }
-            }
-        }
-        return -1;
+        Random random = new Random();
+      while(true) {
+          int noun = random.nextInt(100);
+          int verb = random.nextInt(100);
+          if (solutionPartOne(noun, verb) == 19690720) {
+              System.out.println(noun + " " + verb);
+              return 100 * noun + verb;
+          }
+      }
+
     }
 }
