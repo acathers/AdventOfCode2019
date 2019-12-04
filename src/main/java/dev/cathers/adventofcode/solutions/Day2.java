@@ -1,6 +1,5 @@
 package dev.cathers.adventofcode.solutions;
 
-import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.Stream;
 
